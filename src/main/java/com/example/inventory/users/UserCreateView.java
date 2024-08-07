@@ -8,6 +8,7 @@ import com.example.inventory.utils.ValidatorUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Control;
@@ -35,7 +36,7 @@ public class UserCreateView {
     private BorderPane root = new BorderPane();
     private UserController controller;
     private AdminView view;
-    private Set<Role> roles = new HashSet<>();
+    private Role role = Role.STOREKEEPER;
 
 	public UserCreateView(AdminView view) {
 		this.view = view;
@@ -57,6 +58,13 @@ public class UserCreateView {
         TextField passwordField = ViewUtil.createTextField("Password");
         CheckBox enabledField = new CheckBox("Enable User");
 
+        ChoiceBox<Role> cbField = new ChoiceBox<Role>();
+        cbField.getItems().addAll(Role.STOREKEEPER, Role.ADMIN);
+        cbField.setValue(Role.STOREKEEPER);
+        cbField.setPrefWidth(250); 
+        cbField.setMaxHeight(40);
+        cbField.setPadding(new Insets(10, 10, 10, 10));
+
         TilePane tile = new TilePane();
         tile.setMaxWidth(1200);
         tile.setTileAlignment(Pos.CENTER_LEFT);
@@ -68,6 +76,7 @@ public class UserCreateView {
             ViewUtil.createFieldPane(userNameField, "Username: "),
         	ViewUtil.createFieldPane(emailField, "Email: "),
             ViewUtil.createFieldPane(passwordField, "Password: "),
+            ViewUtil.createFieldPane(cbField, "Role: "),
             ViewUtil.createFieldPane(enabledField, " "));
 
         // Submit button
@@ -97,12 +106,16 @@ public class UserCreateView {
 
                 boolean isEnabled = enabledField.isSelected();
 
+                if (cbField.getValue() != null) {
+                    role = cbField.getValue();
+                }
+
                 User user = new User(nameField.getText(),
                     emailField.getText(),
                     userNameField.getText(),
                     passwordField.getText(),
                     isEnabled,
-                    roles);
+                    role);
 
                 ValidatorUtil validator = new ValidatorUtil(user); 
 

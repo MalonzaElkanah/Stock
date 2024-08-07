@@ -8,6 +8,7 @@ import com.example.inventory.utils.ValidatorUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Control;
@@ -24,11 +25,6 @@ import javafx.scene.text.FontPosture;
 
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.HashSet;
 
 
 public class UserUpdateView {
@@ -36,7 +32,7 @@ public class UserUpdateView {
     private UserController controller;
     private AdminView view;
     private User user;
-    private Set<Role> roles = new HashSet<>();
+    private Role role = Role.STOREKEEPER;
 
 	public UserUpdateView(AdminView view, User user) {
 		this.view = view;
@@ -58,6 +54,14 @@ public class UserUpdateView {
         TextField emailField = ViewUtil.createTextFieldWithText(user.getEmail());
         // TextField passwordField = ViewUtil.createTextFieldWithText();
 
+        ChoiceBox<Role> cbField = new ChoiceBox<Role>();
+        cbField.getItems().addAll(Role.STOREKEEPER, Role.ADMIN);
+        cbField.setValue(user.getRole());
+        cbField.setPrefWidth(250); 
+        cbField.setMaxHeight(40);
+        cbField.setPadding(new Insets(10, 10, 10, 10));
+
+
         CheckBox enabledField = new CheckBox("Enable User");
         enabledField.setIndeterminate(false);
         enabledField.setSelected(user.isEnabled());
@@ -72,7 +76,7 @@ public class UserUpdateView {
         tile.getChildren().addAll(ViewUtil.createFieldPane(nameField, "Name: "),
             ViewUtil.createFieldPane(userNameField, "Username: "),
         	ViewUtil.createFieldPane(emailField, "Email: "),
-            // ViewUtil.createFieldPane(passwordField, "Password: "),
+            ViewUtil.createFieldPane(cbField, "Role: "),
             ViewUtil.createFieldPane(enabledField, " "));
 
         // Submit button
@@ -102,7 +106,11 @@ public class UserUpdateView {
                 user.setEmail(emailField.getText());
                 user.setUserName(userNameField.getText());
                 user.setEnabled(enabledField.isSelected());
-                user.setRoles(roles);
+
+                if (cbField.getValue() != null) {
+                    role = cbField.getValue();
+                }
+                user.setRole(role);
 
                 ValidatorUtil validator = new ValidatorUtil(user); 
 

@@ -2,6 +2,7 @@ package com.example.inventory.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -46,6 +47,18 @@ public class ViewUtil {
         }
         
         return false; 
+    }
+
+    public static PasswordField createPasswordField(String text) {
+        PasswordField dataField = new PasswordField();
+        dataField.setPromptText(text);
+        dataField.setFont(Font.font("Monospace", FontWeight.NORMAL, FontPosture.REGULAR, 15));
+        // dataField.setAlignment(Pos.CENTER_LEFT);
+        dataField.setPrefWidth(250); 
+        dataField.setMaxHeight(40);
+        dataField.setPadding(new Insets(10, 10, 10, 10));
+
+        return dataField;
     }
 
     public static TextField createTextField(String text) {

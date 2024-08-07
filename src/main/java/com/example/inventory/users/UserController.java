@@ -30,7 +30,7 @@ public class UserController {
 			ViewUtil.errorAlert("Error: Invalid username or password!");
 		} else if (!user.get().isEnabled()) {
 			ViewUtil.errorAlert("Error: User not Activated! Please contact admin.");
-		} else if (user.get().password().equals(password)) {
+		} else if (user.get().checkPassword(password)) {
 			System.out.println("User login");
 			return true;
 		} else {
@@ -63,6 +63,11 @@ public class UserController {
 
 	public void deactivateUser(User user) {
 		user.setEnabled(false);
+		model.update(user);
+	}
+
+	public void changeUserPassword(User user, String password) {
+		user.setPassword(password);
 		model.update(user);
 	}
 }

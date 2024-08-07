@@ -1,6 +1,7 @@
 package com.example.inventory.users;
 
 import com.example.inventory.AppView;
+import com.example.inventory.users.login.LoginView;
 import com.example.inventory.product.ProductListView;
 import com.example.inventory.product.ProductCreateView;
 import com.example.inventory.inventory.InventoryListView;
@@ -9,6 +10,7 @@ import com.example.inventory.inventory.CheckoutListView;
 import com.example.inventory.discrepancy.DiscrepancyListView;
 import com.example.inventory.reports.ReportView;
 import com.example.inventory.reports.DashboardView;
+import com.example.inventory.utils.ViewUtil;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,6 +22,11 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -53,11 +60,21 @@ public class AdminView {
     private UserController controller = new UserController();
     private AppView view;
 
-	public AdminView(AppView view) {
-        this.view = view;
-        this.view.setRoot(root);
-		init();
-        new DashboardView(this);
+    private User user;
+
+	public AdminView(AppView view, User user) {
+        // check role is admin
+        if (user.checkRole(Role.ADMIN)) {
+            this.user = user;
+            this.view = view;
+            this.view.setRoot(root);
+
+            init();
+            new DashboardView(this);
+        } else {
+            ViewUtil.errorAlert("Error: Admin Login Only!");
+            new LoginView(view);
+        }
 	}
 
 	public void init() {
@@ -75,10 +92,16 @@ public class AdminView {
             BorderStroke.MEDIUM,
             new Insets(0, 0, 0, 0))));
 
-        VBox headerPane = new VBox(10);
+        VBox headerPane = new VBox();
         headerPane.setAlignment(Pos.CENTER);
-        headerPane.setPadding(new Insets(30, 0, 0, 0));
-        headerPane.getChildren().addAll(titleLabel, separator);
+        headerPane.setPadding(new Insets(0, 0, 0, 0));
+
+        VBox titlePane = new VBox(10);
+        titlePane.setAlignment(Pos.CENTER);
+        titlePane.setPadding(new Insets(30, 0, 0, 0));
+        titlePane.getChildren().addAll(titleLabel, separator);
+
+        headerPane.getChildren().addAll(getMenuBar(), titlePane);
         /*
 		HBox pane = new HBox(40);
         pane.setAlignment(Pos.CENTER);
@@ -121,6 +144,14 @@ public class AdminView {
         this.centerPane.setCenter(scrollPane);
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
+    public AppView getAppView() {
+        return this.view;
+    }
+
     private Button navButton(String name, String image) {
         Button button;
         try {
@@ -143,7 +174,6 @@ public class AdminView {
 		button.setMinHeight(200);
 		// button.setWrapText(true);
 		button.setPadding(new Insets(10, 10, 10, 10));
-
 
         return button;
     }
@@ -191,7 +221,9 @@ public class AdminView {
         TreeItem userNode = navTreeItem("Users", "src/main/resources/icon/manager.png");
         TreeItem createUserNode = new TreeItem("Create User");
         TreeItem userListNode = new TreeItem("List User");
-        userNode.getChildren().addAll(userListNode, createUserNode);
+        TreeItem changePasswordNode = new TreeItem("Change Password");
+        TreeItem logoutNode = new TreeItem("Logout");
+        userNode.getChildren().addAll(userListNode, createUserNode, changePasswordNode, logoutNode);
         userNode.setExpanded(true);
 
         // Reports
@@ -216,7 +248,7 @@ public class AdminView {
                     System.out.println("Root");
                 } else if (selectedTreeItem == homeNode) {
                     System.out.println("Home");
-                    new AdminView(view);
+                    new AdminView(view, user);
                 } else if (selectedTreeItem == productNode) {
                     System.out.println("Product");
                     new ProductListView(AdminView.this);
@@ -239,6 +271,10 @@ public class AdminView {
                     new UserListView(AdminView.this);
                 } else if (selectedTreeItem == createUserNode) {
                     new UserCreateView(AdminView.this);
+                } else if (selectedTreeItem == changePasswordNode) {
+                    new ChangePasswordView(AdminView.this);
+                } else if (selectedTreeItem == logoutNode) {
+                    new LoginView(view);
                 }  else if (selectedTreeItem == reportNode) {
                     new ReportView(AdminView.this);
                     System.out.println("Report");
@@ -249,5 +285,63 @@ public class AdminView {
         });
 
         return treeView;
+    }
+
+    private MenuBar getMenuBar() {
+        MenuBar menuBar = new MenuBar();
+
+        Menu productMenu = new Menu("Product");
+        MenuItem listProductMenuItem = new MenuItem("List Product");
+        MenuItem createProductMenuItem = new MenuItem("Create Product");
+        
+        productMenu.getItems().addAll(
+            listProductMenuItem,
+            createProductMenuItem
+        );
+
+        Menu userMenu = new Menu("Users");
+        MenuItem listUserMenuItem = new MenuItem("List User");
+        MenuItem createUserMenuItem = new MenuItem("Create User");
+        userMenu.getItems().addAll(listUserMenuItem, createUserMenuItem);
+
+        Menu profileMenu = new Menu("Profile");
+        MenuItem changePasswordMenuItem = new MenuItem("Change Password");
+        MenuItem logoutMenuItem = new MenuItem("Logout");
+        profileMenu.getItems().addAll(changePasswordMenuItem, logoutMenuItem);
+
+        Menu invMenu = new Menu("Inventory");
+        MenuItem listInvMenuItem = new MenuItem("My Inventory");
+        MenuItem checkinInvMenuItem = new MenuItem("Checkin Stocks");
+        MenuItem checkoutInvMenuItem = new MenuItem("Sold Stocks");
+        MenuItem discrepancyInvMenuItem = new MenuItem("Stock Discrepancies");
+        invMenu.getItems().addAll(listInvMenuItem,
+            checkinInvMenuItem, checkoutInvMenuItem, discrepancyInvMenuItem);
+
+        Menu otherMenu = new Menu("Others");
+        MenuItem homeMenuItem = new MenuItem("Home");
+        MenuItem reportMenuItem = new MenuItem("Report");
+        otherMenu.getItems().addAll(homeMenuItem, reportMenuItem);
+
+        // Action Listeners
+        createProductMenuItem.setOnAction(a -> new ProductCreateView(AdminView.this));
+        listProductMenuItem.setOnAction(a -> new ProductListView(AdminView.this));
+
+        listUserMenuItem.setOnAction(a -> new UserListView(AdminView.this));
+        createUserMenuItem.setOnAction(a -> new UserCreateView(AdminView.this));
+
+        changePasswordMenuItem.setOnAction(a -> new ChangePasswordView(AdminView.this));
+        logoutMenuItem.setOnAction(a -> new LoginView(view));
+
+        listInvMenuItem.setOnAction(a -> new InventoryListView(AdminView.this));
+        checkinInvMenuItem.setOnAction(a -> new CheckinListView(AdminView.this));
+        checkoutInvMenuItem.setOnAction(a -> new CheckoutListView(AdminView.this));
+        discrepancyInvMenuItem.setOnAction(a -> new DiscrepancyListView(AdminView.this));
+
+        homeMenuItem.setOnAction(a -> new AdminView(view, user));
+        reportMenuItem.setOnAction(a -> new ReportView(AdminView.this));
+
+        menuBar.getMenus().addAll(productMenu, invMenu, userMenu, profileMenu, otherMenu);
+
+        return menuBar;
     }
 }

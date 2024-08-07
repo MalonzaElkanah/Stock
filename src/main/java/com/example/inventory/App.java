@@ -3,6 +3,7 @@ package com.example.inventory;
 // import com.example.inventory.product.ProductController;
 import com.example.inventory.users.UserModel;
 import com.example.inventory.users.User;
+import com.example.inventory.users.Role;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -32,13 +33,13 @@ public class App extends Application {
                 "malonza.app",
                 "Pass1234",
                 true,
-                null));
+                Role.ADMIN));
             model.create(new User("Elkanah",
                 "elkanah@app.com",
                 "elkanah.app",
                 "Pass1234",
                 false,
-                null));
+                Role.STOREKEEPER));
             System.out.println("\n Users: \n");
             System.out.println(model.findAll());
         } catch (Exception e) {

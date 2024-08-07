@@ -1,11 +1,9 @@
 package com.example.inventory.utils;
 
 import com.example.inventory.product.Product;
-import com.example.inventory.inventory.Inventory;
 import com.example.inventory.inventory.Checkin;
 import com.example.inventory.inventory.Checkout;
 import com.example.inventory.discrepancy.Discrepancy;
-import com.example.inventory.users.Role;
 import com.example.inventory.users.User;
 
 import org.hibernate.cfg.Configuration;
@@ -27,7 +25,6 @@ public class ModelUtil {
 
         try {
             // sessionFactory = new MetadataSources(registry)
-            //    .addAnnotatedClass(Role.class)
             //    .addAnnotatedClass(User.class)
             //    .addAnnotatedClass(Product.class)
             //    .addAnnotatedClass(Inventory.class)
@@ -35,7 +32,6 @@ public class ModelUtil {
             //    .buildSessionFactory();
 
             SessionFactory factory = new Configuration()
-                .addAnnotatedClass(Role.class)
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Product.class)
                 .addAnnotatedClass(Checkout.class)

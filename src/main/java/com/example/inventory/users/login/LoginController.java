@@ -30,10 +30,10 @@ public class LoginController {
 			ViewUtil.errorAlert("Error: Invalid username or password!");
 		} else if (!user.get().isEnabled()) {
 			ViewUtil.errorAlert("Error: User not Activated! Please contact admin.");
-		} else if (user.get().password().equals(password)) {
+		} else if (user.get().checkPassword(password)) {
 			System.out.println("User login");
 
-			new AdminView(view.getAppView());
+			new AdminView(view.getAppView(), user.get());
 			return true;
 		} else {
 			ViewUtil.errorAlert("Error: Invalid username or password!");

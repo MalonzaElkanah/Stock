@@ -65,10 +65,13 @@ public class UserListView {
         TableColumn<User, String> userNameCol = new TableColumn<User, String>("User Name");
         userNameCol.setCellValueFactory(new PropertyValueFactory<User, String>("userName"));
 
+        TableColumn<User, Role> roleCol = new TableColumn<User, Role>("Role");
+        roleCol.setCellValueFactory(new PropertyValueFactory<User, Role>("role"));
+
         TableColumn<User, LocalDateTime> createdCol = new TableColumn<User, LocalDateTime>("Added Date");
         createdCol.setCellValueFactory(new PropertyValueFactory<User, LocalDateTime>("created"));
         
-		table.getColumns().setAll(nameCol, emailCol, userNameCol, createdCol);
+		table.getColumns().setAll(nameCol, emailCol, userNameCol, roleCol, createdCol);
         table.setEditable(true);
         addActiveCheckboxToTable();
         addUpdateButtonToTable();
