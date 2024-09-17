@@ -45,7 +45,7 @@ public class CheckoutCreateView {
 
 	private void init() {
         Inventory inventory = new Inventory(product);
-        Label label = new Label("Check-out " + product.getName() + " to Inventory");
+        Label label = new Label("Check-out " + product.getName());
         label.setFont(new Font(25));
         label.setPadding(new Insets(30, 10, 40, 10));
 

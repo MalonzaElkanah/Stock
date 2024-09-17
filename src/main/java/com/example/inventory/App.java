@@ -28,20 +28,20 @@ public class App extends Application {
 
         try {
             UserModel model = new UserModel();
-            model.create(new User("Malonza",
-                "malonza@app.com",
-                "malonza.app",
-                "Pass1234",
+            model.create(new User("Admin",
+                "admin@app.com",
+                "admin",
+                "admin",
                 true,
                 Role.ADMIN));
-            model.create(new User("Elkanah",
-                "elkanah@app.com",
-                "elkanah.app",
-                "Pass1234",
-                false,
-                Role.STOREKEEPER));
-            System.out.println("\n Users: \n");
-            System.out.println(model.findAll());
+            // model.create(new User("Elkanah",
+            //    "elkanah@app.com",
+            //    "elkanah.app",
+            //    "Pass1234",
+            //    false,
+            //    Role.STOREKEEPER));
+            // System.out.println("\n Users: \n");
+            // System.out.println(model.findAll());
         } catch (Exception e) {
             System.out.println("ERROR RUNNING APPLICATION: ");
             System.out.println(e);

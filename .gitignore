@@ -32,8 +32,8 @@ lib/
 target/
 
 # java properties file
-application.properties
-hibernate.properties
+# application.properties
+# hibernate.properties
 
 # Others
 .git

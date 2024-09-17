@@ -43,6 +43,13 @@
             <version>6.2.5.Final</version>
         </dependency>
 
+        <!--dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>6.5.2.Final</version>
+        </dependency-->
+
+
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.el</artifactId>
@@ -79,6 +86,12 @@
             <version>8.3.0</version>
         </dependency>
 
+        <!--dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.31.1</version>
+        </dependency-->
+
         <!-- The projects use the H2 in-memory database -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -103,6 +116,10 @@
         </testResources>
         <pluginManagement>
             <plugins>
+                <!--plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-wrapper-plugin</artifactId>
+                </plugin-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -114,22 +131,15 @@
                 </plugin>
 
                 <plugin>
+                    <!--groupId>com.zenjava</groupId-->
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-maven-plugin</artifactId>
-                    <version>0.0.1</version>
+                    <version>0.0.8</version>
                     <configuration>
                         <mainClass>com.example.inventory.App</mainClass>
                     </configuration>
                 </plugin>
 
-                <!--plugin> 
-                    <groupId>org.apache.tomcat.maven</groupId> 
-                    <artifactId>tomcat7-maven-plugin</artifactId> 
-                    <version>2.2</version> 
-                    <configuration> 
-                        <port>9090</port> 
-                    </configuration>
-                </plugin-->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
@@ -158,6 +168,70 @@
                         -->
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>  
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <mainClass>com.example.inventory.App</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                            <phase>package</phase> <!-- bind to the packaging phase -->
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <shadedArtifactAttached>true</shadedArtifactAttached>
+                                <shadedClassifierName>project-classifier</shadedClassifierName>
+                                <outputFile>shade\${project.artifactId}.jar</outputFile>
+                                <transformers>
+                                    <transformer implementation=
+                                                         "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <mainClass>com.example.inventory.App</mainClass>
+                                    </transformer>
+                                </transformers>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>  
+                    <groupId>org.apache.maven.plugins</groupId>  
+                    <artifactId>maven-jar-plugin</artifactId>  
+                    <version>3.1.0</version>  
+                    <configuration>  
+                        <archive>  
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>  
+                                <mainClass>com.example.inventory.App</mainClass>  
+                            </manifest>  
+                        </archive>  
+                    </configuration>  
+                </plugin>  
 
             </plugins>
         </pluginManagement>
